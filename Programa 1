@@ -113,3 +113,431 @@ int main() {
 
     return 0;
 }
+
+
+
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_FUNCIONARIOS 5
+
+struct Funcionario{
+char nome[100];
+float salario;
+int acessos[3];
+int tempoAdmissao;
+};
+
+bool temAcessoSetor51(Funcionario f){
+    for(int i = 0; i<3;i++){
+        if(f.acessos[i] == 51){
+            return true;
+        }
+    }
+return false;
+}
+
+
+
+
+void cadastrarFuncionarios (Funcionario funcionarios[], int *quantidade){
+    for(int i = *quantidade; i< MAX_FUNCIONARIOS; i++){
+       Funcionario f;// = funcionarios[i];
+        printf("Cadastro do %d* funcionario", i+1);
+        printf("Digite o nome: ");
+        scanf(" %s", f.nome);
+        printf("Digite o salario: ");
+        scanf("%f", &f.salario);
+        printf("Tempo de Admissao (em anos): ");
+        scanf("%d", &f.tempoAdmissao);
+        printf("Acessos (max 3 setores): ");
+        for(int j = 0; j < 3; j++){
+            printf("Setor: %d", j + 1);
+            scanf("%d", &f.acessos[j]);
+        }
+        funcionarios[i] = f;
+        (*quantidade)++;
+        char resposta;
+        printf("Deseja continuar cadastrando? s/n ");
+        scanf(" %c", &resposta);
+
+        if(resposta == 'n' || resposta == 'N'){
+            break;
+        }
+    }
+
+
+
+void imprimirFuncionarios(Funcionario funcionarios[], int quantidade){
+for(int i = 0; i < quantidade; i++){
+Funcionario f = funcionarios[i];
+
+    printf("\n=== DADOS DO FUNCIONARIO %d: ===\n", i+1);
+    printf("Nome: %s \n", f.nome);
+    printf("Salario: R$ %d \n", f.salario);
+    printf("Tempo de Admissao: %d", f.tempoAdmissao);
+
+
+    if(temAcessoSetor51(f)){
+        printf("Possui acesso ao setor 51!\n");
+        printf("Adicional de 1.000!\n");
+        f.salario += 1000.0;
+    }else{
+        printf("Não possui acesso ao setor 51!\n");
+    }
+    printf("Salario Final: %.2f", f.salario);
+}
+
+
+int main(){
+ Funcionario funcionarios(MAX_FUNCIONARIOS);
+int quantidadeFuncionarios = 0;
+int opcao;
+do{
+    printf("\n=== MENU ===\n");
+    printf("1 . Cadastro do funcionario\n");
+    printf("2. Listar Funcionario\n");
+    printf("3. Sair\n");
+    scanf("%d", &opcao);
+
+switch(opcao){
+case 1:
+    cadastrarFuncionarios(funcionarios, &quantidadeFuncionarios);
+    break;
+case 2:
+    imprimirFuncionarios(funcionarios, quantidadeFuncionarios);
+    break;
+case 3:
+    printf("Saindo do programa...");
+    break;
+default:
+    printf("Opção invalida!! Tente novamente. ");
+break;
+
+
+}
+
+
+}while (opcao != 3);
+
+return 0;
+}
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+void demonstrarMalloc();
+void demonstrarCalloc();
+void demonstrarRealloc();
+void demonstrarFree();
+
+int main() {
+    int opcao;
+
+    do {
+        printf("\n--- MENU DE ALOCACAO DINAMICA ---\n");
+        printf("1. Demonstrar malloc()\n");
+        printf("2. Demonstrar calloc()\n");
+        printf("3. Demonstrar realloc()\n");
+        printf("4. Demonstrar free()\n");
+        printf("0. Sair\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+
+        switch(opcao) {
+            case 1:
+                demonstrarMalloc();
+                break;
+            case 2:
+                demonstrarCalloc();
+                break;
+            case 3:
+                demonstrarRealloc();
+                break;
+            case 4:
+                demonstrarFree();
+                break;
+            case 0:
+                printf("Encerrando o programa.\n");
+                break;
+            default:
+                printf("Opcao invalida!\n");
+        }
+    } while(opcao != 0);
+
+    return 0;
+}
+
+// Função demonstrando malloc()
+void demonstrarMalloc() {
+    int *vetor, i;
+    vetor = (int *) malloc(5 * sizeof(int));
+
+    if (vetor == NULL) {
+        printf("Erro ao alocar memória com malloc.\n");
+        return;
+    }
+
+    for (i = 0; i < 5; i++) {
+        vetor[i] = i + 1;
+    }
+
+    printf("Vetor alocado com malloc(): ");
+    for (i = 0; i < 5; i++) {
+        printf("%d ", vetor[i]);
+    }
+    printf("\n");
+
+    free(vetor); // Libera após uso
+}
+
+// Função demonstrando calloc()
+void demonstrarCalloc() {
+    int *vetor, i;
+    vetor = (int *) calloc(5, sizeof(int));
+
+    if (vetor == NULL) {
+        printf("Erro ao alocar memória com calloc.\n");
+        return;
+    }
+
+    printf("Vetor alocado com calloc() (inicializado com zero): ");
+    for (i = 0; i < 5; i++) {
+        printf("%d ", vetor[i]);
+    }
+    printf("\n");
+
+    free(vetor); // Libera após uso
+}
+
+// Função demonstrando realloc()
+void demonstrarRealloc() {
+    int *vetor, i;
+
+    vetor = (int *) malloc(3 * sizeof(int));
+    if (vetor == NULL) {
+        printf("Erro ao alocar com malloc.\n");
+        return;
+    }
+
+    for (i = 0; i < 3; i++) {
+        vetor[i] = (i + 1) * 10;
+    }
+
+    printf("Antes do realloc(): ");
+    for (i = 0; i < 3; i++) {
+        printf("%d ", vetor[i]);
+    }
+    printf("\n");
+
+    vetor = (int *) realloc(vetor, 6 * sizeof(int));
+    if (vetor == NULL) {
+        printf("Erro ao realocar memória.\n");
+        return;
+    }
+
+    for (i = 3; i < 6; i++) {
+        vetor[i] = (i + 1) * 10;
+    }
+
+    printf("Depois do realloc(): ");
+    for (i = 0; i < 6; i++) {
+        printf("%d ", vetor[i]);
+    }
+    printf("\n");
+
+    free(vetor);
+}
+
+// Função demonstrando uso de free()
+void demonstrarFree() {
+    int *ptr = (int *) malloc(sizeof(int));
+
+    if (ptr == NULL) {
+        printf("Erro ao alocar memória.\n");
+        return;
+    }
+
+    *ptr = 42;
+    printf("Valor armazenado antes do free(): %d\n", *ptr);
+
+    free(ptr);
+
+    printf("Memória liberada com free().\n");
+    printf("OBS: após o free(), o ponteiro ainda existe, mas seu conteúdo é inválido.\n");
+}
+
+
+
+include <stdio.h>
+#define TAMANHO 5
+
+int somarVetor(int vetor[]){
+
+int soma=0;
+for(int i=0;i<TAMANHO;i++){
+     soma=soma+vetor[i];}
+return soma;
+
+
+}
+int mutiplicaVetor(int vetor[]){
+int mutiplicador=1;
+
+for(int i=0;i<TAMANHO;i++){
+    mutiplicador=mutiplicador*vetor[i];
+}
+return mutiplicador;
+
+}
+int multiplicaPor5(int vetor[]){
+
+int multiplicador =5;
+int somadorMutiplicador=0;
+int resultado=0;
+
+for(int i=0;i<TAMANHO;i++){
+    resultado=multiplicador*vetor[i];
+    somadorMutiplicador=somadorMutiplicador+resultado;}
+    return somadorMutiplicador;
+}
+void trocaVetor(int vetor[],int numero,int indiceVetor){
+
+printf("Vetor:");
+for(int i=0;i<TAMANHO;i++){
+    if(i==indiceVetor){
+     vetor[i]=numero;}
+
+     printf("%d ",vetor[i]);
+}
+
+}
+void ordenaVetor(int vetor[]){
+
+int temp;
+printf("Vetor: ");
+
+for(int i=0;i<TAMANHO;i++){
+for(int j=0;j<TAMANHO-1;j++){
+
+    if(vetor[j]>vetor[j+1]){
+    temp=vetor[j];
+    vetor[j]=vetor[j+1];
+    vetor[j+1]=temp;
+    }
+
+}
+}
+
+for(int i=0;i<TAMANHO;i++){
+    printf("%d ",vetor[i]);
+}
+
+}
+void mostrarVetor(int vetor[]){
+printf("Vetor:");
+
+for(int i=0;i<TAMANHO;i++){
+    printf("%d ",vetor[i]);
+}
+
+}
+void inverterVetor(int vetor[]){
+
+printf("Vetor:");
+
+int inicio=0,fim=4,temp;
+
+while(inicio<fim){
+temp=vetor[inicio];
+vetor[inicio]=vetor[fim];
+vetor[fim]=temp;
+
+inicio=inicio+1;
+fim=fim-1;}
+
+for(int i=0;i<TAMANHO;i++){
+    printf("%d",vetor[i]);
+}
+}
+
+
+
+int main() {
+int vetor[TAMANHO];
+int opcao,numero,resultado;
+int indice_vetor;
+
+
+for(int i=0;i<TAMANHO;i++){
+    printf("Digite um nº inteiro para a posição %d: ",i);
+    scanf("%d",&vetor[i]);
+}
+
+
+
+
+
+do{
+    printf("\n===== MENU =====\n");
+    printf("1 - Soma do vetor \n");
+    printf("2 - produto do vetor\n");
+    printf("3 - Mutiplicar todos os elementos por 5\n");
+    printf("4 - Mudar elemento do vetor\n");
+    printf("5 - Ordenar vetor (Bubble Sort)\n");
+    printf("6 - Inverter vetor\n");
+    printf("7 - Mostrar vetor\n");
+    printf("0 - Sair\n");
+
+    scanf("%d",&opcao);
+    if (opcao == 0) {
+            break;
+        }
+
+
+
+
+
+
+    switch(opcao){
+
+    case 1:
+        printf("A soma dos numeros do vetor é de: %d", somarVetor(vetor));
+    break;
+    case 2:
+        printf("O produto dos numeros do vetor é de: %d",mutiplicaVetor(vetor));
+    break;
+    case 3:
+        printf("A multiplicação dos numeros do vetor por 5 é de: %d",multiplicaPor5(vetor));
+    break;
+    case 4:
+
+        printf("Digite o indice do vetor que deseja alterar: ");
+        scanf("%d",&indice_vetor);
+        printf("Digite o numero que irá substituir a posicao desejada: ");
+        scanf("%d",&numero);
+        trocaVetor(vetor,numero,indice_vetor);
+    break;
+    case 5:
+        ordenaVetor(vetor);
+    break;
+    case 6:
+        inverterVetor(vetor);
+    break;
+    case 7:
+        mostrarVetor(vetor);
+        break;
+    default:
+    printf("Opção Invalida!");
+    break;
+}
+
+}while (opcao != 0);
+
+printf("Saindo do programa...");
+return 0;
+}
+
+
